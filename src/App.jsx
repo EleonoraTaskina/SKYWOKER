@@ -4,12 +4,22 @@ import { useEffect, useState } from 'react'
 function App() {
   const [count, setCount] = useState(0);
   const [number, setNumber] = useState(1);
+  const [allCharacters, setAllCharacters] = useState([]);
   const [character, setCharacter] = useState({
     name: "",
     height: "",
     eye_color: "",
     gender: "",
   });
+
+
+const [mas, setMas] = useState({
+    mass: "",
+    hair_color: "",
+    birth_year: "",
+});
+
+
 
   const up = () => {
     setNumber((prev) => {
@@ -20,12 +30,21 @@ function App() {
 
 
   const down = () => {
-    setNumber((prev)=> {
+    setNumber((prev) => {
       if (prev === 1) return 1;
       return prev - 1;
     });
   };
 
+  useEffect(() => {
+    fetch(`https://swapi.dev/api/people/`)
+      .then((data) => data.json())
+      .then((data) => {
+        setCount(data.count);
+        setAllCharacters(data.results);
+      });
+  }, []);
+ 
 
   useEffect(() => {
     fetch(`https://swapi.dev/api/people/${number}/`)
@@ -39,16 +58,33 @@ function App() {
         gender: data.gender,
       }));
     });
-  }, [number]);
+  },[number]);
+
 
   useEffect(() => {
     fetch(`https://swapi.dev/api/people/`)
     .then((data) => data.json())
     .then((data) => {
       setCount(data.count);
+      setAllCharacters(data.results);
     });
   },[]);
-  
+
+
+  useEffect(() => {
+    fetch(`https://swapi.dev/api/people/${number}/`)
+    .then((mas) => mas.json())
+    .then((mas) => {
+      setMas(prev => ({
+        ...prev,
+        mass: mas.mass,
+        hair_color: mas.hair_color,
+        birth_year: mas.birth_year,
+      }));
+    });
+  }, [number]);
+
+
 
   return (
   <div>
@@ -69,7 +105,26 @@ function App() {
     </div>
     <div className="person-line">
       <span className='label'>Gender: </span> <span className=''>{character.gender}</span>
-    </div>  
+    </div>
+
+    <div className="person">
+      <span className='label'> Mass: </span> <span className=''>{mas.mass}</span>
+    </div>
+    <div className="person">
+      <span className='label'> Hair_color: </span> <span className=''>{mas.hair_color}</span>
+    </div>
+    <div className="person">
+      <span className='label'> Birth_year: </span> <span className=''>{mas.birth_year}</span>
+    </div>
+
+    <div className="person">
+        <ul>
+          {allCharacters.map((char, index) => (
+            <p key={index}>{char.name}</p>
+          ))}
+        </ul>
+      </div>
+
   </div>
   );
 }
