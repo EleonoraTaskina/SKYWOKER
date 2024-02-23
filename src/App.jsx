@@ -88,6 +88,7 @@ const [mas, setMas] = useState({
 
   return (
   <div>
+    <div>Hello</div>
     <div className="line">
       <span onClick={down} className="number"> - </span> 
       <span className='number'>{number}</span> 
